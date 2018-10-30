@@ -1,19 +1,19 @@
 galaxy_info:
+  role_name: haproxy
   author: serlohu@upv.es
   description: Installs HAProxy
   company: GRyCAP UPV
   license: Apache 
-  min_ansible_version: 2.0
-
+  min_ansible_version: 2.4
   platforms:
   - name: EL
     versions:
     - 7
   - name: Ubuntu
-  versions:
-  - xenial  
+    versions:
+    - trusty
+    - xenial
   galaxy_tags:
-    - nomad
-    - hashicorp
+    - haproxy
 
-dependencies: []   
+dependencies: []
