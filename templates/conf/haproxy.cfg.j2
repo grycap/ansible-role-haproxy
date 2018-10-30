@@ -1,0 +1,36 @@
+{% if haproxy_basic_auth_enabled | bool -%}
+userlist myusers
+    {%- for infouser in haproxy_userlist %} 
+    user {{ infouser['user'] }} {{ infouser['type'] }} {{ infouser['password'] }}
+    {%- endfor %}
+{%- endif %}
+
+global
+    {%- for line in haproxy_global %} 
+    {{ line }}
+    {%- endfor %}
+
+
+defaults
+    {%- for line in haproxy_defaults %} 
+    {{ line }}
+    {%- endfor %}
+
+
+frontend http-in
+    bind {{ haproxy_frontend_address }}:{{ haproxy_frontend_port }}
+    {% if haproxy_basic_auth_enabled | bool -%}
+    acl auth_ok http_auth(myusers)
+    http-request allow if auth_ok    
+    use_backend servers if auth_ok
+    http-request deny
+    {%- else %}
+    default_backend servers
+    {%- endif %}
+
+backend servers
+    balance {{ haproxy_servers_balance }}  
+    {%- for line in haproxy_servers %} 
+    server {{ line }}
+    {%- endfor %}
+
